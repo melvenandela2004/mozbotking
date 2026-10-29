@@ -1,0 +1,804 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050916">
+<title>CRASH BOT MOZ</title>
+
+<style>
+:root{
+  --bg:#050916;--panel:#0b1730;--line:#1b3762;
+  --blue:#168cff;--purple:#652cff;--cyan:#00e5ff;
+  --text:#edf5ff;--muted:#9bb0d0;--green:#00d69a;--red:#ff4168;
+}
+*{box-sizing:border-box}
+html{width:100%;min-height:100%;scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;width:100%;overflow-x:hidden;
+  color:var(--text);font-family:Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at top left,#102657,transparent 40%),
+  radial-gradient(circle at bottom right,#24104b,transparent 35%),var(--bg);
+}
+button,input{font:inherit}
+button{
+  cursor:pointer;border:0;border-radius:10px;padding:12px 16px;
+  background:linear-gradient(110deg,var(--purple),var(--blue));
+  color:white;font-weight:bold;transition:filter .2s;
+}
+button:hover{filter:brightness(1.15)}
+button:disabled{opacity:.5;cursor:not-allowed;filter:none}
+input{
+  width:100%;min-width:0;padding:13px;background:#050d1c;color:white;
+  border:1px solid #24436e;border-radius:9px;outline:none;margin-top:7px;
+}
+input:focus{border-color:var(--cyan)}
+label{display:block;color:#b9cbe6;font-size:13px;margin:14px 0}
+a{overflow-wrap:anywhere}
+.hidden{display:none!important}
+.app{width:100%;max-width:1320px;margin:auto;padding:20px}
+header{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:25px;flex-wrap:wrap;
+}
+.brand{font-size:22px;font-weight:900;overflow-wrap:anywhere}
+.brand span{color:var(--cyan)}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.panel,.login-card,.hero,.sidebar{
+  background:linear-gradient(145deg,#0b1730,#060d1c);
+  border:1px solid var(--line);border-radius:17px;padding:22px;
+  box-shadow:0 15px 40px #0003;min-width:0;
+}
+.login-layout{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,410px);
+  gap:25px;align-items:center;min-height:70vh;
+}
+.intro h1{font-size:clamp(38px,6vw,65px);line-height:1;margin:15px 0}
+.intro h1 span{color:var(--blue)}
+.robot{font-size:100px;margin:20px 0;filter:drop-shadow(0 0 20px #168cff70)}
+.eyebrow{color:var(--cyan);letter-spacing:2px;font-size:11px;font-weight:bold}
+.login-card h2{text-align:center}
+.login-card>.muted{text-align:center}
+.full{width:100%;margin-top:12px;display:block;text-align:center}
+.whatsapp{
+  display:block;text-align:center;color:white;background:#087d54;
+  border-radius:10px;padding:13px;margin-top:12px;font-weight:bold;
+  text-decoration:none;overflow-wrap:anywhere;
+}
+.secondary{background:#10203b;border:1px solid var(--line)}
+.error{color:#ff819a;font-size:13px;margin-top:10px;min-height:16px}
+.notice{
+  margin-top:15px;padding:12px;border:1px solid #725522;
+  border-radius:10px;color:#f7d99b;font-size:12px;line-height:1.5;
+}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px}
+.sidebar{display:flex;flex-direction:column;gap:8px;min-height:500px}
+.nav{background:transparent;text-align:left;color:#b7c8e2;box-shadow:none}
+.nav.active{background:#102c59;border:1px solid #214f8c}
+.side-bottom{margin-top:auto;font-size:12px;color:var(--muted);line-height:1.8}
+main{min-width:0}
+.hero{margin-bottom:16px;background:linear-gradient(110deg,#0b1e42,#101448,#180e38)}
+.hero h1{font-size:32px;margin:12px 0;overflow-wrap:anywhere}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.stat{padding:18px;background:#0a1730;border:1px solid var(--line);border-radius:13px;min-width:0}
+.stat small{color:var(--muted)}
+.stat strong{display:block;font-size:25px;margin-top:12px;overflow-wrap:anywhere}
+.panel{margin-bottom:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px;flex-wrap:wrap}
+h2{font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.bet-card,.game-card{
+  text-align:center;padding:17px 12px;background:#08152c;
+  border:1px solid var(--line);border-radius:13px;cursor:pointer;
+  transition:.2s;min-width:0;overflow-wrap:anywhere;
+}
+.bet-card:hover,.game-card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.bet-card.selected,.game-card.selected{border-color:var(--cyan);background:#10274a}
+.bet-logo{font-size:22px;font-weight:900;color:var(--cyan);margin-bottom:10px;overflow-wrap:anywhere}
+.bet-card p,.game-card p{font-size:12px;color:var(--muted);margin:7px 0}
+.game-icon{font-size:30px;margin-bottom:8px}
+.choice-note{
+  padding:13px;border-radius:10px;background:#081a32;
+  border:1px solid var(--line);margin:12px 0;font-size:13px;line-height:1.6;
+  overflow-wrap:anywhere;
+}
+.pill{background:#063d35;color:#5dffd0;border-radius:20px;padding:5px 9px;font-size:11px}
+.off{background:#47172b;color:#ff94ac}
+.small{font-size:11px;padding:8px;margin:2px}
+.danger{background:#9e1e43}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.signal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.signal{
+  background:#071326;border:1px solid #17375d;border-radius:12px;
+  padding:16px;text-align:center;min-width:0;
+}
+.signal-time{font-size:17px;color:white;font-weight:bold}
+.signal-protection{margin-top:9px;font-size:14px;font-weight:bold;color:var(--cyan)}
+.signal small{color:var(--muted)}
+.clock{font-size:clamp(20px,4vw,24px);font-weight:bold;color:var(--cyan);margin:12px 0}
+.lock-message{font-size:13px;color:#ffd479;text-align:center;margin-top:12px;line-height:1.6}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:490px}
+th,td{text-align:left;padding:12px 8px;border-bottom:1px solid #18304f;font-size:13px}
+th{color:var(--muted)}
+footer{text-align:center;color:#6e84a8;font-size:11px;padding:20px}
+.modal-bg{
+  position:fixed;inset:0;background:#020611df;display:grid;
+  place-items:center;padding:15px;z-index:5;overflow-y:auto;
+}
+.modal{
+  width:min(430px,100%);max-height:calc(100dvh - 30px);overflow-y:auto;
+  background:#081329;border:1px solid #28508a;border-radius:18px;padding:25px;
+}
+
+/* Tablets e computadores com ecrãs médios */
+@media(max-width:1024px){
+  .app{padding:16px}
+  .layout{grid-template-columns:195px minmax(0,1fr);gap:14px}
+  .login-layout{grid-template-columns:minmax(0,1fr) minmax(290px,370px);gap:18px}
+  .panel,.login-card,.hero,.sidebar{padding:18px}
+  .signal-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* Telemóveis e tablets em modo vertical */
+@media(max-width:760px){
+  .app{width:100%;padding:12px}
+  header{align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .brand{font-size:19px}
+  header #openAdmin{padding:10px;font-size:12px}
+  .login-layout,.layout{grid-template-columns:minmax(0,1fr);gap:14px;min-height:auto}
+  .intro{text-align:center}
+  .intro h1{font-size:clamp(36px,9vw,48px)}
+  .robot{font-size:65px;margin:14px 0}
+  .login-card,.panel,.hero,.sidebar{padding:16px;min-width:0}
+  .hero h1{font-size:clamp(24px,6vw,32px)}
+  .sidebar{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;min-height:auto;
+  }
+  .sidebar>.brand,.side-bottom{grid-column:1/-1}
+  .side-bottom{margin-top:8px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat{padding:13px}
+  .stat strong{font-size:clamp(17px,4vw,23px)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .bet-card,.game-card{padding:14px 8px}
+  .signal-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .signal{padding:12px 6px}
+  .signal-time{font-size:clamp(14px,4vw,17px)}
+  .signal-protection{font-size:12px}
+  .form-grid{grid-template-columns:minmax(0,1fr)}
+  .panel-head{align-items:flex-start}
+  table{min-width:490px}
+  button{max-width:100%;overflow-wrap:anywhere}
+  .modal{padding:18px}
+}
+
+/* Telemóveis estreitos */
+@media(max-width:380px){
+  .app{padding:8px}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .sidebar{grid-template-columns:minmax(0,1fr)}
+  .sidebar>.brand,.side-bottom{grid-column:auto}
+  .signal-grid,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .panel,.hero,.login-card,.sidebar{padding:12px}
+}
+
+/* Monitores grandes */
+@media(min-width:1400px){
+  .app{max-width:1320px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div class="brand">⚡ CRASH <span>BOT</span> MOZ
+    <div class="muted">SMART GAMING INTERFACE</div>
+  </div>
+  <button id="openAdmin">⚙ Painel Admin</button>
+</header>
+
+<section id="loginScreen" class="login-layout">
+  <div class="intro">
+    <div class="eyebrow">SISTEMA • MOÇAMBIQUE</div>
+    <h1>CRASH BOT<br><span>MOZ</span></h1>
+    <p class="muted">Entra na tua conta para aceder ao painel e aos horários dos sinais.</p>
+    <div class="robot">🤖</div>
+    <div class="eyebrow">ACESSO CONTROLADO</div>
+  </div>
+
+  <div class="login-card">
+    <h2>Acesso ao Bot</h2>
+    <p class="muted">Introduz o email e a senha fornecidos pelo administrador.</p>
+    <form id="loginForm">
+      <label>Email<input id="email" type="email" placeholder="email@exemplo.com" required></label>
+      <label>Senha<input id="password" type="password" placeholder="A tua senha" required></label>
+      <button class="full">ENTRAR →</button>
+      <div id="loginError" class="error"></div>
+    </form>
+    <div class="notice"><b>Ainda não tens conta?</b><br>Solicita a criação da tua conta através do WhatsApp.</div>
+    <a class="whatsapp" id="createAccountLink" target="_blank" rel="noopener">✚ CRIAR CONTA PELO WHATSAPP</a>
+    <a class="whatsapp" id="loginSupportLink" target="_blank" rel="noopener">☎ CONTACTAR SUPORTE</a>
+  </div>
+</section>
+
+<section id="userScreen" class="layout hidden">
+  <aside class="sidebar">
+    <div class="brand">⚡ CRASH <span>MOZ</span></div>
+    <button class="nav active" data-page="home">⌂ Início</button>
+    <button class="nav" data-page="demo">◈ Sinais</button>
+    <button class="nav" data-page="profile">♙ Meu perfil</button>
+    <button class="nav" data-page="support">☏ Suporte</button>
+    <div class="side-bottom">
+      ● Sessão ativa<br><span id="sideEmail"></span>
+      <button class="secondary full" id="logout">Sair da conta</button>
+    </div>
+  </aside>
+
+  <main>
+    <div id="homePage">
+      <div class="hero">
+        <div class="eyebrow">BEM-VINDO À PLATAFORMA</div>
+        <h1>Olá, <span id="welcome"></span>!</h1>
+        <p class="muted">Consulta os horários no fuso horário de Moçambique.</p>
+        <button id="goDemo">ABRIR PAINEL DE SINAIS →</button>
+      </div>
+      <div class="cards">
+        <div class="stat"><small>ESTADO DA CONTA</small><strong style="color:var(--green)">Ativa</strong></div>
+        <div class="stat"><small>FUSO HORÁRIO</small><strong>Africa/Maputo</strong></div>
+      </div>
+    </div>
+
+    <div id="demoPage" class="hidden">
+      <div class="hero">
+        <div class="eyebrow">PAINEL DE HORÁRIOS</div>
+        <h1>Sinais <span style="color:var(--cyan)">CRASH MOZ</span></h1>
+        <p class="muted">Horários apresentados segundo o relógio de Moçambique.</p>
+        <div>Hora de Moçambique:</div>
+        <div id="maputoClock" class="clock">--:--:--</div>
+        <div class="muted">Africa/Maputo · UTC+02:00</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>🎮 Escolhe o jogo</h2><span class="pill">4 OPÇÕES</span></div>
+        <div id="gameGrid" class="grid"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>🏆 Plataforma selecionada</h2></div>
+        <div id="betGrid" class="grid"></div>
+        <div class="choice-note">Casa: <b id="chosenBet">Nenhuma</b><br>Jogo: <b id="chosenGame">Nenhum</b></div>
+        <button id="startDemo" class="full">GERAR HORÁRIOS DOS SINAIS</button>
+        <div id="lockMessage" class="lock-message hidden"></div>
+        <p id="selectionMessage" class="error"></p>
+      </div>
+
+      <div id="resultsPanel" class="panel hidden">
+        <div class="panel-head">
+          <h2 id="resultTitle">Horários programados</h2>
+          <span class="pill">HORA DE MAPUTO</span>
+        </div>
+        <div id="signalGrid" class="signal-grid"></div>
+        <button id="refreshDemo" class="secondary full">ATUALIZAR PRÓXIMO SINAL</button>
+      </div>
+    </div>
+
+    <div id="profilePage" class="panel hidden">
+      <h2>Meu perfil</h2>
+      <label>Email<input id="profileEmail" disabled></label>
+      <label>Estado<input value="Ativa" disabled></label>
+      <p class="muted">Para alterar a senha, contacta o administrador.</p>
+    </div>
+
+    <div id="supportPage" class="panel hidden">
+      <h2>Suporte ao Cliente</h2>
+      <p class="muted">Contacta-nos para obter ajuda com a tua conta.</p>
+      <a class="whatsapp" id="supportWhatsApp" target="_blank" rel="noopener">☎ FALAR COM O SUPORTE NO WHATSAPP</a>
+      <a class="whatsapp" id="supportCreateAccount" target="_blank" rel="noopener">✚ SOLICITAR CRIAÇÃO DE CONTA</a>
+    </div>
+  </main>
+</section>
+
+<section id="adminScreen" class="hidden">
+  <div class="panel-head">
+    <div><div class="eyebrow">CONTROLO DO SISTEMA</div><h1>Painel do Administrador</h1></div>
+    <button class="secondary" id="backAdmin">← Voltar</button>
+  </div>
+
+  <div class="cards">
+    <div class="stat"><small>TOTAL DE CONTAS</small><strong id="total">0</strong></div>
+    <div class="stat"><small>CONTAS ATIVAS</small><strong id="active" style="color:var(--green)">0</strong></div>
+    <div class="stat"><small>CONTAS BLOQUEADAS</small><strong id="blocked" style="color:var(--red)">0</strong></div>
+  </div>
+
+  <div class="panel">
+    <h2 id="formTitle">Criar conta de utilizador</h2>
+    <form id="accountForm">
+      <div class="form-grid">
+        <label>Email do utilizador<input id="newEmail" type="email" placeholder="cliente@exemplo.com" required></label>
+        <label>Definir senha<input id="newPassword" type="password" minlength="4" required></label>
+      </div>
+      <button id="saveAccount">＋ Criar conta</button>
+      <button id="cancelEdit" type="button" class="secondary hidden">Cancelar</button>
+      <p id="adminMessage" class="muted"></p>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Contas registadas</h2>
+      <button class="secondary small" id="exportCSV">Exportar CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Email</th><th>Estado</th><th>Ações</th></tr></thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="notice">Versão local: as contas ficam neste navegador. Para utilização pública, configura Firebase Authentication e regras de segurança no servidor.</div>
+</section>
+
+<footer>CRASH BOT MOZ · Sinais demonstrativos · Joga com responsabilidade</footer>
+</div>
+
+<div id="adminModal" class="modal-bg hidden">
+  <div class="modal">
+    <div class="brand">🔐 Painel <span>Admin</span></div>
+    <h2>Acesso do Administrador</h2>
+    <form id="adminForm">
+      <label>Senha do administrador<input id="adminPassword" type="password" required></label>
+      <button class="full">ACEDER AO PAINEL</button>
+      <div id="adminError" class="error"></div>
+    </form>
+    <button id="closeModal" class="secondary full">Cancelar</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const ADMIN_PASSWORD="665544";
+const STORAGE_KEY="crashBotMozUsers";
+const LOCK_KEY="crashBotMozLocksByCombinationV2";
+const WHATSAPP_NUMBER="258873540295";
+const TIME_ZONE="Africa/Maputo";
+const $=id=>document.getElementById(id);
+
+let currentUser=null;
+let editingEmail=null;
+let selectedBet="";
+let selectedGame="";
+let signals=[];
+
+function readLocks(){
+  try{
+    const value=JSON.parse(localStorage.getItem(LOCK_KEY)||"{}");
+    return value&&typeof value==="object"?value:{};
+  }catch{return {};}
+}
+function saveLocks(locks){
+  localStorage.setItem(LOCK_KEY,JSON.stringify(locks));
+}
+function combinationKey(bet=selectedBet,game=selectedGame){
+  return bet+"::"+game;
+}
+function getCombinationLock(key=combinationKey()){
+  return Number(readLocks()[key]||0);
+}
+function setCombinationLock(key,timestamp){
+  const locks=readLocks();
+  locks[key]=timestamp;
+  saveLocks(locks);
+}
+function clearExpiredLocks(){
+  const locks=readLocks();
+  const now=Date.now();
+  let changed=false;
+  for(const key of Object.keys(locks)){
+    if(Number(locks[key])<=now){
+      delete locks[key];
+      changed=true;
+    }
+  }
+  if(changed)saveLocks(locks);
+}
+
+function whatsappURL(message){
+  return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message);
+}
+$("createAccountLink").href=whatsappURL("Olá! Quero criar uma conta no CRASH BOT MOZ.");
+$("supportCreateAccount").href=whatsappURL("Olá! Gostaria de solicitar a criação de uma conta.");
+$("loginSupportLink").href=whatsappURL("Olá! Preciso de ajuda com o CRASH BOT MOZ.");
+$("supportWhatsApp").href=whatsappURL("Olá! Preciso de suporte.");
+
+const bettingSites=[
+  {name:"ElephantBet",logo:"🐘"},
+  {name:"888Bet",logo:"888"},
+  {name:"PrideBet",logo:"🏆"},
+  {name:"JogaBet",logo:"⚽"},
+  {name:"Betway",logo:"B"},
+  {name:"Betyetu",logo:"🎯"},
+  {name:"Placard",logo:"P"},
+  {name:"Megagame Live",logo:"🎮"},
+  {name:"Sportbet",logo:"🏅"}
+];
+const games=[
+  {name:"Aviator",icon:"✈️"},
+  {name:"JetX",icon:"🚀"},
+  {name:"Aero",icon:"🛩️"},
+  {name:"Earplane",icon:"🛫"}
+];
+
+function getUsers(){
+  try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}
+  catch{return [];}
+}
+function saveUsers(users){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(users));
+}
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function showScreen(id){
+  ["loginScreen","userScreen","adminScreen"].forEach(s=>$(s).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function openUserPage(page){
+  ["home","demo","profile","support"].forEach(p=>{
+    $(p+"Page").classList.toggle("hidden",p!==page);
+  });
+  document.querySelectorAll(".nav").forEach(b=>{
+    b.classList.toggle("active",b.dataset.page===page);
+  });
+  if(page==="demo"){
+    renderChoices();
+    updateGenerationLock();
+  }
+}
+function renderChoices(){
+  $("betGrid").innerHTML=bettingSites.map(site=>`
+    <div class="bet-card ${selectedBet===site.name?"selected":""}"
+      data-bet="${escapeHTML(site.name)}" tabindex="0" role="button"
+      aria-pressed="${selectedBet===site.name}">
+      <div class="bet-logo">${site.logo}</div><b>${site.name}</b>
+      <p>Plataforma selecionável</p>
+    </div>`).join("");
+
+  $("gameGrid").innerHTML=games.map(game=>`
+    <div class="game-card ${selectedGame===game.name?"selected":""}"
+      data-game="${escapeHTML(game.name)}" tabindex="0" role="button"
+      aria-pressed="${selectedGame===game.name}">
+      <div class="game-icon">${game.icon}</div><b>${game.name}</b>
+      <p>Jogo selecionável</p>
+    </div>`).join("");
+
+  $("chosenBet").textContent=selectedBet||"Nenhuma";
+  $("chosenGame").textContent=selectedGame||"Nenhum";
+}
+
+function handleChoice(e){
+  const card=e.target.closest("[data-bet],[data-game]");
+  if(!card)return;
+  const oldKey=combinationKey();
+
+  if(card.dataset.bet)selectedBet=card.dataset.bet;
+  else selectedGame=card.dataset.game;
+
+  const newKey=combinationKey();
+  if(newKey!==oldKey){
+    signals=[];
+    $("signalGrid").innerHTML="";
+    $("resultsPanel").classList.add("hidden");
+    $("selectionMessage").textContent="";
+  }
+  renderChoices();
+  updateGenerationLock();
+}
+$("betGrid").addEventListener("click",handleChoice);
+$("gameGrid").addEventListener("click",handleChoice);
+
+["betGrid","gameGrid"].forEach(id=>{
+  $(id).addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){
+      const card=e.target.closest("[data-bet],[data-game]");
+      if(card){e.preventDefault();card.click();}
+    }
+  });
+});
+
+function formatTime(date){
+  return new Intl.DateTimeFormat("pt-MZ",{
+    timeZone:TIME_ZONE,hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+  }).format(date);
+}
+function updateClock(){
+  $("maputoClock").textContent=new Intl.DateTimeFormat("pt-MZ",{
+    timeZone:TIME_ZONE,hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+  }).format(new Date());
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function generateSchedule(){
+  const start=new Date(Date.now());
+  start.setSeconds(0,0);
+  start.setMinutes(start.getMinutes()+2);
+  const schedule=[];
+  let offset=0;
+  for(let i=0;i<12;i++){
+    if(i>0)offset+=Math.random()<0.5?2:3;
+    schedule.push(new Date(start.getTime()+offset*60000));
+  }
+  return schedule;
+}
+function randomTarget(){
+  const levels=[3,4,5,6,7,8,9,10];
+  return levels[Math.floor(Math.random()*levels.length)];
+}
+function renderSignals(){
+  $("signalGrid").innerHTML=signals.map((s,i)=>`
+    <div class="signal">
+      <small>SINAL ${String(i+1).padStart(2,"0")}</small>
+      <div class="signal-time">${formatTime(s.date)}</div>
+      <div class="signal-protection">Proteção 2X-${s.target}X</div>
+    </div>`).join("");
+  $("resultTitle").textContent=selectedGame+" · "+selectedBet;
+}
+
+function setGenerationLock(key,lastSignalDate){
+  const lastMinuteStart=new Date(lastSignalDate);
+  lastMinuteStart.setSeconds(0,0);
+  const until=lastMinuteStart.getTime()+60000;
+  setCombinationLock(key,until);
+  updateGenerationLock();
+}
+function formatRemaining(milliseconds){
+  const totalSeconds=Math.max(0,Math.ceil(milliseconds/1000));
+  const minutes=Math.floor(totalSeconds/60);
+  const seconds=totalSeconds%60;
+  const hours=Math.floor(minutes/60);
+  const remainingMinutes=minutes%60;
+  if(hours>0){
+    return String(hours).padStart(2,"0")+":"+
+      String(remainingMinutes).padStart(2,"0")+":"+
+      String(seconds).padStart(2,"0");
+  }
+  return String(remainingMinutes).padStart(2,"0")+":"+
+    String(seconds).padStart(2,"0");
+}
+
+function updateGenerationLock(){
+  if($("demoPage").classList.contains("hidden"))return;
+  clearExpiredLocks();
+
+  const key=combinationKey();
+  const until=getCombinationLock(key);
+  const remaining=until-Date.now();
+  const button=$("startDemo");
+  const message=$("lockMessage");
+
+  if(!selectedBet||!selectedGame){
+    button.disabled=true;
+    button.textContent="SELECIONA CASA E JOGO";
+    message.textContent="Escolhe uma casa de apostas e um jogo para gerar sinais.";
+    message.classList.remove("hidden");
+    return;
+  }
+  if(remaining>0){
+    button.disabled=true;
+    button.textContent="AGUARDA "+formatRemaining(remaining);
+    message.textContent="Esta combinação está bloqueada até terminar o último horário. Podes escolher outra casa ou outro jogo para gerar novos sinais.";
+    message.classList.remove("hidden");
+  }else{
+    button.disabled=false;
+    button.textContent="GERAR HORÁRIOS DOS SINAIS";
+    message.textContent="Combinação disponível: "+selectedBet+" + "+selectedGame+".";
+    message.classList.remove("hidden");
+  }
+}
+
+function generateDemo(){
+  if(!selectedBet||!selectedGame){
+    $("selectionMessage").textContent="Seleciona uma plataforma e um jogo para continuar.";
+    return;
+  }
+  const key=combinationKey();
+  const until=getCombinationLock(key);
+  if(Date.now()<until){
+    updateGenerationLock();
+    return;
+  }
+  signals=generateSchedule().map(date=>({date,target:randomTarget()}));
+  renderSignals();
+  $("resultsPanel").classList.remove("hidden");
+  $("selectionMessage").textContent="";
+  setGenerationLock(key,signals[signals.length-1].date);
+}
+function refreshNextSignal(){
+  if(!signals.length){
+    $("selectionMessage").textContent="Gera primeiro uma lista de sinais para esta combinação.";
+    return;
+  }
+  const index=signals.findIndex(s=>s.date.getTime()>Date.now());
+  if(index===-1){
+    $("selectionMessage").textContent="Todos os horários desta lista já passaram.";
+    return;
+  }
+  signals[index].target=randomTarget();
+  renderSignals();
+  $("selectionMessage").textContent="";
+}
+
+$("startDemo").onclick=generateDemo;
+$("refreshDemo").onclick=refreshNextSignal;
+setInterval(updateGenerationLock,250);
+
+$("goDemo").onclick=()=>openUserPage("demo");
+document.querySelectorAll(".nav").forEach(button=>{
+  button.onclick=()=>openUserPage(button.dataset.page);
+});
+
+$("loginForm").onsubmit=e=>{
+  e.preventDefault();
+  const email=$("email").value.trim().toLowerCase();
+  const password=$("password").value;
+  const user=getUsers().find(u=>u.email===email&&u.password===password&&u.active);
+  if(!user){
+    $("loginError").textContent="Email ou senha incorretos, ou conta bloqueada.";
+    return;
+  }
+  currentUser=user;
+  $("loginError").textContent="";
+  $("welcome").textContent=user.email;
+  $("sideEmail").textContent=user.email;
+  $("profileEmail").value=user.email;
+  openUserPage("home");
+  showScreen("userScreen");
+};
+$("logout").onclick=()=>{
+  currentUser=null;
+  $("password").value="";
+  showScreen("loginScreen");
+};
+
+$("openAdmin").onclick=()=>{
+  $("adminPassword").value="";
+  $("adminError").textContent="";
+  $("adminModal").classList.remove("hidden");
+};
+$("closeModal").onclick=()=>$("adminModal").classList.add("hidden");
+
+$("adminForm").onsubmit=e=>{
+  e.preventDefault();
+  if($("adminPassword").value!==ADMIN_PASSWORD){
+    $("adminError").textContent="Senha incorreta.";
+    return;
+  }
+  $("adminModal").classList.add("hidden");
+  resetForm();
+  renderUsers();
+  $("adminMessage").textContent="";
+  showScreen("adminScreen");
+};
+$("backAdmin").onclick=()=>showScreen(currentUser?"userScreen":"loginScreen");
+
+function resetForm(){
+  editingEmail=null;
+  $("accountForm").reset();
+  $("newEmail").disabled=false;
+  $("newPassword").required=true;
+  $("newPassword").placeholder="";
+  $("formTitle").textContent="Criar conta de utilizador";
+  $("saveAccount").textContent="＋ Criar conta";
+  $("cancelEdit").classList.add("hidden");
+}
+$("cancelEdit").onclick=resetForm;
+
+$("accountForm").onsubmit=e=>{
+  e.preventDefault();
+  const email=$("newEmail").value.trim().toLowerCase();
+  const password=$("newPassword").value;
+  let users=getUsers();
+
+  if(password.length<4){
+    $("adminMessage").textContent="A senha precisa de pelo menos 4 caracteres.";
+    return;
+  }
+  if(!editingEmail&&users.some(u=>u.email===email)){
+    $("adminMessage").textContent="Já existe uma conta com esse email.";
+    return;
+  }
+  if(editingEmail){
+    users=users.map(u=>u.email===editingEmail?{...u,password}:u);
+    $("adminMessage").textContent="Senha atualizada.";
+  }else{
+    users.push({email,password,active:true});
+    $("adminMessage").textContent="Conta criada. O utilizador já pode entrar neste navegador.";
+  }
+  saveUsers(users);
+  resetForm();
+  renderUsers();
+};
+
+function renderUsers(){
+  const users=getUsers();
+  $("total").textContent=users.length;
+  $("active").textContent=users.filter(u=>u.active).length;
+  $("blocked").textContent=users.filter(u=>!u.active).length;
+  $("usersTable").innerHTML=users.length?users.map((u,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${escapeHTML(u.email)}</td>
+      <td><span class="pill ${u.active?"":"off"}">${u.active?"Ativa":"Bloqueada"}</span></td>
+      <td>
+        <button class="small" data-edit="${escapeHTML(u.email)}">Editar senha</button>
+        <button class="small secondary" data-toggle="${escapeHTML(u.email)}">${u.active?"Bloquear":"Ativar"}</button>
+        <button class="small danger" data-delete="${escapeHTML(u.email)}">Eliminar</button>
+      </td>
+    </tr>`).join(""):'<tr><td colspan="4">Ainda não existem contas.</td></tr>';
+}
+
+$("usersTable").onclick=e=>{
+  const btn=e.target.closest("button");
+  if(!btn)return;
+  const email=btn.dataset.edit||btn.dataset.toggle||btn.dataset.delete;
+  let users=getUsers();
+  const user=users.find(u=>u.email===email);
+  if(!user)return;
+
+  if(btn.dataset.edit){
+    editingEmail=email;
+    $("newEmail").value=user.email;
+    $("newPassword").value="";
+    $("newPassword").placeholder="Introduz a nova senha";
+    $("newPassword").required=true;
+    $("newEmail").disabled=true;
+    $("formTitle").textContent="Editar senha da conta";
+    $("saveAccount").textContent="Guardar alterações";
+    $("cancelEdit").classList.remove("hidden");
+    $("adminMessage").textContent="Introduz a nova senha.";
+    $("newPassword").focus();
+  }
+  if(btn.dataset.toggle){
+    user.active=!user.active;
+    saveUsers(users);
+    renderUsers();
+  }
+  if(btn.dataset.delete&&confirm("Eliminar a conta "+email+"?")){
+    saveUsers(users.filter(u=>u.email!==email));
+    if(currentUser&&currentUser.email===email){
+      currentUser=null;
+      showScreen("loginScreen");
+    }
+    renderUsers();
+    $("adminMessage").textContent="Conta eliminada.";
+  }
+};
+
+$("exportCSV").onclick=()=>{
+  const rows=[["Email","Estado"],...getUsers().map(u=>[u.email,u.active?"Ativa":"Bloqueada"])];
+  const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const url=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"}));
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="contas-crash-bot-moz.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+
+renderChoices();
+renderUsers();
+})();
+</script>
+</body>
+</html>
